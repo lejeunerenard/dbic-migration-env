@@ -19,7 +19,10 @@ _dbicm_env() {
       export PERL5LIB="$DBICM_BEFORE_PERL5LIB:$lib_add"
       export DBIC_MIGRATION_SCHEMA_CLASS=$DSN
    else
-      export PERL5LIB="$DBICM_BEFORE_PERL5LIB"
+      if [ ! "$DBIC_MIGRATION_SCHEMA_CLASS" ]
+      then
+         export PERL5LIB="$DBICM_BEFORE_PERL5LIB"
+      fi
    fi
 }
 
