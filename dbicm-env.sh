@@ -1,23 +1,25 @@
 # Copyright (c) 2013 Sean Zellmer @lejeunerenard under GPLv2
 
+export DBICM_BEFORE_PERL5LIB=$PERL5LIB
+
 _dbicm_env() {
    # Find config file
    # @TODO Should be allow yml files in environments
    local config_file="${_DBICM_CONFIG:-$*/environments/development.yml}"
-
-   echo "\$* : "$*;
+   local lib_add="${_DBICM_LIB_DIRS:-$*/lib:/local/lib/perl5}"
 
    # bail if we don't own the config file (we're another user but our ENV is still set)
    [ ! -f "$config_file" ] && return
    [ -f "$config_file" -a ! -O "$config_file" ] && return
 
-   if [ $DBIC_MIGRATION_SCHEMA_CLASS ]
+   DSN=$(grep "schema_class:" $config_file | sed 's/^\s*//g' | awk '{print $2}')
+
+   if [ "$DBIC_MIGRATION_SCHEMA_CLASS" != "$DSN" ]
    then
-      echo "DBIC_MIGRATION_SCHEMA_CLASS Found"
+      export PERL5LIB="$DBICM_BEFORE_PERL5LIB:$lib_add"
+      export DBIC_MIGRATION_SCHEMA_CLASS=$DSN
    else
-      DSN=$(grep "dsn:" $config_file | sed 's/^\s*//g' | awk '{print $2}')
-      echo "DSN: "$DSN
-      DBIC_MIGRATION_SCHEMA_CLASS=$DSN
+      export PERL5LIB="$DBICM_BEFORE_PERL5LIB"
    fi
 }
 
