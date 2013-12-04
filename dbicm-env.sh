@@ -40,11 +40,9 @@ if compctl >/dev/null 2>&1; then
 elif complete >/dev/null 2>&1; then
     # bash
     # tab completion
-    complete -o filenames -C '_z --complete "$COMP_LINE"' ${_DBICM_ENV_CMD:-dbicm-env}
-    [ "$_Z_NO_PROMPT_COMMAND" ] || {
-        # populate directory list. avoid clobbering other PROMPT_COMMANDs.
-        grep "_z --add" <<< "$PROMPT_COMMAND" >/dev/null || {
-            PROMPT_COMMAND="$PROMPT_COMMAND"$'\n''_z --add "$(pwd '$_Z_RESOLVE_SYMLINKS' 2>/dev/null)" 2>/dev/null;'
-        }
-    }
+    #complete -o filenames -C '_z --complete "$COMP_LINE"' ${_DBICM_ENV_CMD:-dbicm-env}
+     # populate directory list. avoid clobbering other PROMPT_COMMANDs.
+     grep "_dbicm_env" <<< "$PROMPT_COMMAND" >/dev/null || {
+         PROMPT_COMMAND="$PROMPT_COMMAND"$'\n''_dbicm_env "$(pwd 2>/dev/null)" 2>/dev/null;'
+     }
 fi
