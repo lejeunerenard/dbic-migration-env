@@ -6,7 +6,7 @@ _dbicm_env() {
    # Find config file
    # @TODO Should be allow yml files in environments
    local config_file="${_DBICM_CONFIG:-$*/environments/development.yml}"
-   local lib_add="${_DBICM_LIB_DIRS:-$*/lib:/local/lib/perl5}"
+   local lib_add="${_DBICM_LIB_DIRS:-$*/lib:$*/local/lib/perl5}"
 
    # bail if we don't own the config file (we're another user but our ENV is still set)
    [ ! -f "$config_file" ] && return
