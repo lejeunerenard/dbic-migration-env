@@ -3,18 +3,21 @@
 _dbicm_env() {
    # Find config file
    # @TODO Should be allow yml files in environments
-   local config_file="${_DBICM_CONFIG:-$*/config.yml}"
+   local config_file="${_DBICM_CONFIG:-$*/environments/development.yml}"
 
    echo "\$* : "$*;
-   echo "config_file: "$config_file;
 
    # bail if we don't own the config file (we're another user but our ENV is still set)
+   [ ! -f "$config_file" ] && return
    [ -f "$config_file" -a ! -O "$config_file" ] && return
 
    if [ $DBIC_MIGRATION_SCHEMA_CLASS ]
    then
       echo "DBIC_MIGRATION_SCHEMA_CLASS Found"
    else
+      DSN=$(grep "dsn:" $config_file | sed 's/^\s*//g' | awk '{print $2}')
+      echo "DSN: "$DSN
+      DBIC_MIGRATION_SCHEMA_CLASS=$DSN
    fi
 }
 
