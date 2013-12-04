@@ -10,7 +10,7 @@ _dbicm_env() {
 
    # bail if we don't own the config file (we're another user but our ENV is still set)
    [ ! -f "$config_file" ] && return
-   [ -f "$config_file" -a ! -O "$config_file" ] && return
+   [ -f "$config_file" -a ! -r "$config_file" ] && return
 
    DSN=$(grep "schema_class:" $config_file | sed 's/^\s*//g' | awk '{print $2}')
 
