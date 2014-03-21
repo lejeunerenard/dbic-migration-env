@@ -9,8 +9,8 @@ _dbicm_env() {
    local lib_add="${_DBICM_LIB_DIRS:-$*/lib:$*/local/lib/perl5}"
 
    # bail if we don't own the config file (we're another user but our ENV is still set)
-   [ ! -f "$config_file" ] && return
-   [ -f "$config_file" -a ! -r "$config_file" ] && return
+   [ ! -f "$config_file" ] && _dbicm_clear_env && return
+   [ -f "$config_file" -a ! -r "$config_file" ] && _dbicm_clear_env && return
 
    DSN=$(grep "schema_class:" $config_file | sed 's/^\s*//g' | awk '{print $2}')
 
@@ -24,6 +24,11 @@ _dbicm_env() {
          export PERL5LIB="$DBICM_BEFORE_PERL5LIB"
       fi
    fi
+}
+
+_dbicm_clear_env() {
+   export PERL5LIB=$DBICM_BEFORE_PERL5LIB
+   export DBIC_MIGRATION_SCHEMA_CLASS=""
 }
 
 alias ${_DBICM_ENV_CMD:-dbicm-envz}='_dbicm_env 2>&1'
